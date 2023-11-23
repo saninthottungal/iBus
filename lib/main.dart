@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus/Core/Colors.dart';
 import 'package:ibus/Screens/ScreenAuth/ScreenSignIn.dart';
 import 'package:ibus/Screens/ScreenAuth/ScreenSignUp.dart';
+import 'package:ibus/Screens/ScreenHome/ScreenHome.dart';
 
 main() {
   runApp(const Myapp());
@@ -18,7 +19,7 @@ class Myapp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
         textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
       ),
-      home: const ScreenSignUp(),
+      home: const ScreenHome(),
     );
   }
 }
