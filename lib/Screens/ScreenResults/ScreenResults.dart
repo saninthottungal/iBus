@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:ibus/Core/Colors.dart';
 import 'package:ibus/Core/Widgets/GContainer.dart';
 
 class ScreenResults extends StatefulWidget {
@@ -44,6 +42,8 @@ class _MyWidgetState extends State<ScreenResults> {
               itemCount: 15,
             ),
           ),
+
+          //removeeeeee
         ],
       )),
     );

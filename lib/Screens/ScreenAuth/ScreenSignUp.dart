@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ibus/Core/Widgets/GContainer.dart';
 import 'package:ibus/Screens/ScreenAuth/ScreenSignIn.dart';
+import 'package:ibus/Screens/ScreenGreet/ScreenGreet.dart';
+import 'package:ibus/Screens/ScreenHome/ScreenHome.dart';
 
 class ScreenSignUp extends StatefulWidget {
   const ScreenSignUp({super.key});
@@ -60,7 +62,9 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
               child: const Text(
                 "Already Have An Account?\nSign In",
                 textAlign: TextAlign.center,
-              ))
+              )),
+
+          //remove
         ],
       )),
     );

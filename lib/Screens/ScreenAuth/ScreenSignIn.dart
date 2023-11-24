@@ -60,7 +60,7 @@ class _ScreenSignInState extends State<ScreenSignIn> {
               child: const Text(
                 "New to iBus?\nSign Up",
                 textAlign: TextAlign.center,
-              ))
+              )),
         ],
       )),
     );

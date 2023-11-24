@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ibus/Core/Colors.dart';
 
 import 'package:ibus/Core/Widgets/GContainer.dart';
+import 'package:ibus/Core/Widgets/SnaackBar.dart';
+import 'package:ibus/Screens/ScreenAuth/ScreenSignIn.dart';
 
 class ScreenGreet extends StatefulWidget {
   const ScreenGreet({super.key});
@@ -40,8 +42,8 @@ class _ScreenGreetState extends State<ScreenGreet> {
                 controller: nameController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.person_3_outlined),
-                  hintStyle: TextStyle(color: Colors.black45),
-                  hintText: "Mark",
+                  hintStyle: TextStyle(color: Colors.black38),
+                  hintText: "eg : Mark",
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -53,10 +55,27 @@ class _ScreenGreetState extends State<ScreenGreet> {
             SizedBox(
               width: 100,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (nameController.text.isEmpty) {
+                    SnaackBar.showSnaackBar(
+                        context, "Name cannot be empty !", snackRed);
+                  } else if (nameController.text.isNotEmpty) {
+                    SnaackBar.showSnaackBar(
+                        context, "Name Saved !", snackGreen);
+
+                    //ScreenAuth Route
+
+                    Navigator.of(context).pushReplacementNamed("signin");
+                  } else {
+                    SnaackBar.showSnaackBar(
+                        context, "Unknown Error Occured !", snackRed);
+                  }
+                },
                 child: const Text("Go !"),
               ),
             ),
+
+            //remove
           ],
         ),
       ),
