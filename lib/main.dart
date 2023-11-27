@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ibus2/Screens/ScreenBus.dart';
 import 'package:ibus2/Screens/ScreenGreet.dart';
 import 'package:ibus2/Screens/ScreenHome.dart';
 import 'package:ibus2/Screens/ScreenResults.dart';
@@ -23,6 +24,7 @@ class Myapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
         textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
       ),
@@ -32,8 +34,9 @@ class Myapp extends StatelessWidget {
         "signin": (context) => ScreenSignIn(),
         "signup": (context) => ScreenSignUp(),
         "greet": (context) => const ScreenGreet(),
-        "home": (context) => const ScreenHome(),
+        "home": (context) => ScreenHome(),
         "results": (context) => const ScreenResults(),
+        "bus": (context) => const ScreenBus(),
       },
     );
   }

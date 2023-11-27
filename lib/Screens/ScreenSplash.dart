@@ -58,9 +58,9 @@ Future<void> checkUser(BuildContext context) async {
   await Future.delayed(const Duration(milliseconds: 2000));
   final sharedPref = await SharedPreferences.getInstance();
   final value = sharedPref.getBool(sharedKey);
-  if (value != null) {
-    Navigator.of(context).pushReplacementNamed('home');
-  } else {
+  if (value == null || value == false) {
     Navigator.of(context).pushReplacementNamed('signin');
+  } else {
+    Navigator.of(context).pushReplacementNamed('home');
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/GContainer.dart';
@@ -36,7 +37,7 @@ class _ScreenGreetState extends State<ScreenGreet> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: TextField(
-                maxLength: 10,
+                maxLength: 7,
                 controller: nameController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.person_3_outlined),
@@ -53,20 +54,33 @@ class _ScreenGreetState extends State<ScreenGreet> {
             SizedBox(
               width: 100,
               child: ElevatedButton(
-                onPressed: () {
-                  if (nameController.text.isEmpty) {
+                onPressed: () async {
+                  final displayName = nameController.text;
+
+                  if (displayName.isEmpty) {
                     SnaackBar.showSnaackBar(
                         context, "Name cannot be empty !", snackRed);
-                  } else if (nameController.text.isNotEmpty) {
+                    return;
+                  } else if (displayName.isNotEmpty) {
                     SnaackBar.showSnaackBar(
                         context, "Name Saved !", snackGreen);
-
-                    //ScreenAuth Route
-
-                    Navigator.of(context).pushReplacementNamed("signin");
                   } else {
                     SnaackBar.showSnaackBar(
                         context, "Unknown Error Occured !", snackRed);
+                    return;
+                  }
+
+                  try {
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user != null) {
+                      await user.updateDisplayName(displayName);
+                      Navigator.of(context).pushReplacementNamed('home');
+                    } else {
+                      throw Exception();
+                    }
+                  } on Exception catch (_) {
+                    SnaackBar.showSnaackBar(
+                        context, "Unknown Error Occured", snackRed);
                   }
                 },
                 child: const Text("Go !"),

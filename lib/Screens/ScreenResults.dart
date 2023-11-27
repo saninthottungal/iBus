@@ -12,13 +12,9 @@ class _MyWidgetState extends State<ScreenResults> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: Column(
+      body: Column(
         children: [
           const GContainer(text: "Buses Found!"),
-          const SizedBox(
-            height: 10,
-          ),
           Expanded(
             child: ListView.separated(
               itemBuilder: (ctx, index) {
@@ -26,6 +22,9 @@ class _MyWidgetState extends State<ScreenResults> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Card(
                     child: ListTile(
+                      onTap: () {
+                        Navigator.of(context).pushNamed('bus');
+                      },
                       leading: const Text(
                         "🚍  ",
                         style: TextStyle(fontSize: 23),
@@ -45,7 +44,7 @@ class _MyWidgetState extends State<ScreenResults> {
 
           //removeeeeee
         ],
-      )),
+      ),
     );
   }
 }

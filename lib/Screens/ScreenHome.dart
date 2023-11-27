@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/core/Colors.dart';
+import 'package:ibus2/core/Constants.dart';
+import 'package:ibus2/core/date.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenHome extends StatefulWidget {
   const ScreenHome({super.key});
@@ -10,9 +15,20 @@ class ScreenHome extends StatefulWidget {
 }
 
 class _ScreenHomeState extends State<ScreenHome> {
+  late final String displayName;
+  ValueNotifier<Date> currentDateNotifier = ValueNotifier(Date.today);
+
+  @override
+  void initState() {
+    final user = FirebaseAuth.instance.currentUser;
+    displayName = user?.displayName ?? 'User3412';
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -40,7 +56,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            " Hi Sanin,",
+                            "Hi $displayName😀",
                             textAlign: TextAlign.left,
                             style: GoogleFonts.montserrat(
                               textStyle: const TextStyle(
@@ -52,7 +68,32 @@ class _ScreenHomeState extends State<ScreenHome> {
                           ),
                           CircleAvatar(
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                //pop up button
+
+                                showMenu(
+                                  color:
+                                      const Color.fromARGB(255, 57, 209, 156),
+                                  context: context,
+                                  position:
+                                      RelativeRect.fromLTRB(width, 0, 70, 0),
+                                  items: [
+                                    PopupMenuItem(
+                                      onTap: () async {
+                                        final sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setBool(sharedKey, false);
+                                        await FirebaseAuth.instance.signOut();
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
+                                                'signin', (route) => false);
+                                      },
+                                      child: const Text("Log Out"),
+                                    ),
+                                  ],
+                                );
+                              },
                               icon: const Icon(Icons.person_3_outlined),
                             ),
                           ),
@@ -69,13 +110,12 @@ class _ScreenHomeState extends State<ScreenHome> {
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       child: TextField(
                         decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color.fromARGB(100, 100, 91, 100),
-                            hintStyle: TextStyle(color: Colors.white60),
-                            hintText: "Where Are You Now?",
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.close_outlined,
-                                color: Colors.white60)),
+                          filled: true,
+                          fillColor: Color.fromARGB(100, 100, 91, 100),
+                          hintStyle: TextStyle(color: Colors.white60),
+                          hintText: "Where Are You Now?",
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -88,13 +128,12 @@ class _ScreenHomeState extends State<ScreenHome> {
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       child: TextField(
                         decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color.fromARGB(100, 100, 91, 100),
-                            hintStyle: TextStyle(color: Colors.white60),
-                            hintText: "Where Are You Going?",
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.close_outlined,
-                                color: Colors.white60)),
+                          filled: true,
+                          fillColor: Color.fromARGB(100, 100, 91, 100),
+                          hintStyle: TextStyle(color: Colors.white60),
+                          hintText: "Where Are You Going?",
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -103,12 +142,14 @@ class _ScreenHomeState extends State<ScreenHome> {
               ],
             ),
 
+            const SizedBox(height: 30),
+
             //available Dates
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                "Available Dates",
+                "Preferred Date",
                 textAlign: TextAlign.left,
                 style: GoogleFonts.montserrat(
                   textStyle: const TextStyle(
@@ -119,91 +160,91 @@ class _ScreenHomeState extends State<ScreenHome> {
                 ),
               ),
             ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ChoiceChip(
-                    label: Text("Today"),
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 7, 43, 8)),
-                    selected: true,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-                ChoiceChip(
-                    label: Text("Tomorrow"),
-                    selected: false,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-                ChoiceChip(
-                    label: Text("22nd"),
-                    selected: false,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-                ChoiceChip(
-                    label: Text("Other"),
-                    selected: false,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-              ],
+
+            const SizedBox(height: 15),
+
+            //radiossss
+
+            SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: ValueListenableBuilder(
+                  valueListenable: currentDateNotifier,
+                  builder: (context, newDate, _) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Row(
+                          children: [
+                            Radio(
+                                value: Date.today,
+                                groupValue: newDate,
+                                onChanged: (newValue) {
+                                  currentDateNotifier.value = newValue!;
+                                }),
+                            const Text(
+                              "Today",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: themeColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Radio(
+                                value: Date.tomorrow,
+                                groupValue: newDate,
+                                onChanged: (newValue) {
+                                  currentDateNotifier.value = newValue!;
+                                }),
+                            const Text(
+                              "Tomorrow",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: themeColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Radio(
+                                value: Date.custom,
+                                groupValue: newDate,
+                                onChanged: (newValue) {
+                                  currentDateNotifier.value = newValue!;
+                                }),
+                            const Text(
+                              "Custom",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: themeColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
             ),
+
             const SizedBox(height: 30),
 
             // Preferred Time
 
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                "Preffered Time",
-                textAlign: TextAlign.left,
-                style: GoogleFonts.montserrat(
-                  textStyle: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ChoiceChip(
-                    label: Text("Now"),
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 7, 43, 8)),
-                    selected: false,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-                ChoiceChip(
-                    label: Text("Morning"),
-                    selected: true,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-                ChoiceChip(
-                    label: Text("Noon"),
-                    selected: false,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-                ChoiceChip(
-                    label: Text("Custom"),
-                    selected: false,
-                    selectedColor: Colors.green,
-                    showCheckmark: false,
-                    shape: StadiumBorder()),
-              ],
-            ),
             const SizedBox(height: 40),
 
             //elevated find bus Button
             SizedBox(
-                width: 300,
-                child: ElevatedButton(
-                    onPressed: () {}, child: const Text("Find Buses"))),
+              width: 300,
+              child: ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pushNamed('results');
+                },
+                child: const Text("Find Buses"),
+              ),
+            ),
 
             //remove
           ],
