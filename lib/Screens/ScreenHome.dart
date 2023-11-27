@@ -17,6 +17,7 @@ class ScreenHome extends StatefulWidget {
 class _ScreenHomeState extends State<ScreenHome> {
   late final String displayName;
   ValueNotifier<Date> currentDateNotifier = ValueNotifier(Date.today);
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -109,6 +110,9 @@ class _ScreenHomeState extends State<ScreenHome> {
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       child: TextField(
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color.fromARGB(100, 100, 91, 100),
@@ -121,12 +125,12 @@ class _ScreenHomeState extends State<ScreenHome> {
                     const SizedBox(
                       height: 20,
                     ),
-
                     //text Field 2
 
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 30),
                       child: TextField(
+                        style: TextStyle(color: Colors.white70),
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Color.fromARGB(100, 100, 91, 100),
@@ -144,12 +148,22 @@ class _ScreenHomeState extends State<ScreenHome> {
 
             const SizedBox(height: 30),
 
+            // ListView.separated(
+            //   itemBuilder: (context, index) {
+            //     return const ListTile(
+            //       title: Text("sanin"),
+            //     );
+            //   },
+            //   separatorBuilder: (context, index) => const SizedBox(height: 2),
+            //   itemCount: 1,
+            // ),
+
             //available Dates
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                "Preferred Date",
+                "Select Date",
                 textAlign: TextAlign.left,
                 style: GoogleFonts.montserrat(
                   textStyle: const TextStyle(
@@ -212,7 +226,8 @@ class _ScreenHomeState extends State<ScreenHome> {
                             Radio(
                                 value: Date.custom,
                                 groupValue: newDate,
-                                onChanged: (newValue) {
+                                onChanged: (newValue) async {
+                                  selectedDate = await customDate(context);
                                   currentDateNotifier.value = newValue!;
                                 }),
                             const Text(
@@ -230,6 +245,33 @@ class _ScreenHomeState extends State<ScreenHome> {
             ),
 
             const SizedBox(height: 30),
+
+            ValueListenableBuilder(
+                valueListenable: currentDateNotifier,
+                builder: (context, newValue, _) {
+                  if (newValue == Date.today) {
+                    selectedDate = DateTime.now();
+                  } else if (newValue == Date.tomorrow) {
+                    selectedDate = DateTime.now().add(const Duration(days: 1));
+                  } else {}
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 35),
+                      child: Text(
+                        "Preferred Date : ${dateParser(selectedDate)}",
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                            color: themeColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
 
             // Preferred Time
 
@@ -251,5 +293,25 @@ class _ScreenHomeState extends State<ScreenHome> {
         ),
       ),
     );
+  }
+
+  String dateParser(DateTime value) {
+    final dateTime = '${value.day}th - ${value.month} - ${value.year}';
+    return dateTime;
+  }
+
+  Future<DateTime> customDate(BuildContext context) async {
+    final dateTime = await showDatePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30 * 10),
+      ),
+    );
+    if (dateTime == null) {
+      return DateTime.now();
+    } else {
+      return dateTime;
+    }
   }
 }

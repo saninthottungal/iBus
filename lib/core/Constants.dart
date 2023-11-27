@@ -1,1 +1,29 @@
-const sharedKey = 'user';
+const String sharedKey = 'user';
+
+const Map<int, String> places = {
+  1: 'kottappadi',
+  2: 'kunnummal',
+  3: 'pump',
+  4: 'msp',
+  5: 'guest house',
+  6: 'bypass',
+  7: 'koottilangadi',
+  8: 'keeramkundu',
+  9: 'kachinikkad',
+  10: 'makkarapparambu',
+  11: 'school padi',
+  12: '36',
+  13: 'naranath',
+  14: 'ramapuram',
+  15: '38',
+  16: 'panangangara',
+  17: 'aripra',
+  18: 'thadathil valavu',
+  19: 'thiroorkkadu',
+  20: 'iti',
+  21: 'oradampalam',
+  22: 'angadippuram',
+  23: 'poly',
+  24: 'jubilie jn',
+  25: 'puthuya stand',
+};
