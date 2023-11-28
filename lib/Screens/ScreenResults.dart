@@ -78,7 +78,7 @@ class ScreenResults extends StatelessWidget {
             ),
           ),
           FutureBuilder(
-              future: DatabaseFunctions().readJsonData(),
+              future: DatabaseFunctions().getBuses(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Expanded(
@@ -110,7 +110,7 @@ class ScreenResults extends StatelessWidget {
                               trailing: Padding(
                                 padding: const EdgeInsets.only(right: 30),
                                 child: Text(
-                                  "data",
+                                  snapshot.data!.elementAt(index).start!,
                                   style: GoogleFonts.montserrat(
                                     textStyle: const TextStyle(
                                       color: Colors.green,

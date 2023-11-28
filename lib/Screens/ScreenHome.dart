@@ -375,6 +375,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                 if (whereFrom == null || whereTo == null) {
                   SnaackBar.showSnaackBar(
                       context, "Please select Locations", snackRed);
+
                   return;
                 } else {
                   Navigator.of(context).push(MaterialPageRoute(
