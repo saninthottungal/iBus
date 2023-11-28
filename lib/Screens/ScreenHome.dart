@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ibus2/Screens/ScreenResults.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/Constants.dart';
 import 'package:ibus2/core/SnaackBar.dart';
@@ -376,8 +376,14 @@ class _ScreenHomeState extends State<ScreenHome> {
                   SnaackBar.showSnaackBar(
                       context, "Please select Locations", snackRed);
                   return;
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ScreenResults(
+                            fromLocation: whereFrom!,
+                            toLocation: whereTo!,
+                            selectedDateTime: selectedDate,
+                          )));
                 }
-                Navigator.of(context).pushNamed('results');
               },
               child: const Text("Find Buses"),
             ),

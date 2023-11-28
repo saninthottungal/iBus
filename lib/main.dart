@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/Screens/ScreenBus.dart';
 import 'package:ibus2/Screens/ScreenGreet.dart';
 import 'package:ibus2/Screens/ScreenHome.dart';
-import 'package:ibus2/Screens/ScreenResults.dart';
 import 'package:ibus2/Screens/ScreenSignUp.dart';
 import 'package:ibus2/Screens/ScreenSignin.dart';
 import 'package:ibus2/Screens/ScreenSplash.dart';
@@ -34,8 +33,7 @@ class Myapp extends StatelessWidget {
         "signin": (context) => ScreenSignIn(),
         "signup": (context) => ScreenSignUp(),
         "greet": (context) => const ScreenGreet(),
-        "home": (context) => ScreenHome(),
-        "results": (context) => const ScreenResults(),
+        "home": (context) => const ScreenHome(),
         "bus": (context) => const ScreenBus(),
       },
     );
