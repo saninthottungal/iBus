@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ibus2/Screens/ScreenBus.dart';
 import 'package:ibus2/Screens/ScreenGreet.dart';
 import 'package:ibus2/Screens/ScreenHome.dart';
 import 'package:ibus2/Screens/ScreenSignUp.dart';
@@ -34,7 +33,6 @@ class Myapp extends StatelessWidget {
         "signup": (context) => ScreenSignUp(),
         "greet": (context) => const ScreenGreet(),
         "home": (context) => const ScreenHome(),
-        "bus": (context) => const ScreenBus(),
       },
     );
   }

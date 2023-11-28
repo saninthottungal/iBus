@@ -73,7 +73,6 @@ class ScreenSignIn extends StatelessWidget {
                     context, "E-mail or Password cannot be Empty", snackRed);
                 return;
               }
-              print("sanin");
               try {
                 await FirebaseAuth.instance.signInWithEmailAndPassword(
                     email: email, password: password);
