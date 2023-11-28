@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/Constants.dart';
+import 'package:ibus2/core/SnaackBar.dart';
 import 'package:ibus2/core/date.dart';
 import 'package:ibus2/core/fieldEnum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,16 +23,26 @@ class _ScreenHomeState extends State<ScreenHome> {
 
   ValueNotifier<List<String>> placeListNotifier = ValueNotifier([]);
 
-  String? whereFrom = "sanin";
+  String? whereFrom;
   String? whereTo;
 
   field whichField = field.field1;
+
+  final fromController = TextEditingController();
+  final toController = TextEditingController();
 
   @override
   void initState() {
     final user = FirebaseAuth.instance.currentUser;
     displayName = user?.displayName ?? 'User3412';
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    fromController.dispose();
+    toController.dispose();
+    super.dispose();
   }
 
   @override
@@ -88,13 +99,30 @@ class _ScreenHomeState extends State<ScreenHome> {
                                 items: [
                                   PopupMenuItem(
                                     onTap: () async {
-                                      final sharedPref =
-                                          await SharedPreferences.getInstance();
-                                      sharedPref.setBool(sharedKey, false);
-                                      await FirebaseAuth.instance.signOut();
+                                      try {
+                                        final sharedPref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        sharedPref.setBool(sharedKey, false);
+                                        await FirebaseAuth.instance.signOut();
+                                      } on FirebaseAuthException catch (_) {
+                                        SnaackBar.showSnaackBar(
+                                            context,
+                                            "An unknown Error Occured",
+                                            snackRed);
+                                        return;
+                                      } catch (_) {
+                                        SnaackBar.showSnaackBar(
+                                            context,
+                                            "An unknown Error Occured",
+                                            snackRed);
+                                        return;
+                                      }
                                       Navigator.of(context)
                                           .pushNamedAndRemoveUntil(
                                               'signin', (route) => false);
+                                      SnaackBar.showSnaackBar(context,
+                                          "Logout Succesful", snackGreen);
                                     },
                                     child: const Text("Log Out"),
                                   ),
@@ -115,25 +143,30 @@ class _ScreenHomeState extends State<ScreenHome> {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: TextField(
-                      onTap: () {
-                        whichField = field.field1;
-                        print(whichField.toString());
+                    child: ValueListenableBuilder(
+                        valueListenable: placeListNotifier,
+                        builder: (context, newvalue, _) {
+                          return TextField(
+                            controller: fromController,
+                            onTap: () {
+                              whichField = field.field1;
 
-                        placeListNotifier.value.addAll(places);
-                      },
-                      onChanged: (value) => filterResults(value),
-                      style: const TextStyle(
-                        color: Colors.white70,
-                      ),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: const Color.fromARGB(100, 100, 91, 100),
-                        hintStyle: const TextStyle(color: Colors.white60),
-                        hintText: whereFrom ?? "Where Are You Now ?",
-                        border: const OutlineInputBorder(),
-                      ),
-                    ),
+                              placeListNotifier.value.addAll(places);
+                            },
+                            onChanged: (value) => filterResults(value),
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor:
+                                  const Color.fromARGB(100, 100, 91, 100),
+                              hintStyle: const TextStyle(color: Colors.white70),
+                              hintText: whereFrom ?? "Where Are You Now ?",
+                              border: const OutlineInputBorder(),
+                            ),
+                          );
+                        }),
                   ),
                   const SizedBox(
                     height: 20,
@@ -142,22 +175,28 @@ class _ScreenHomeState extends State<ScreenHome> {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: TextField(
-                      onTap: () {
-                        whichField = field.field2;
-                        // print(whichField.toString());
-                        placeListNotifier.value = places;
-                      },
-                      onChanged: (value) => filterResults(value),
-                      style: const TextStyle(color: Colors.white70),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: const Color.fromARGB(100, 100, 91, 100),
-                        hintStyle: const TextStyle(color: Colors.white60),
-                        hintText: whereTo ?? "Where Are You Going?",
-                        border: const OutlineInputBorder(),
-                      ),
-                    ),
+                    child: ValueListenableBuilder(
+                        valueListenable: placeListNotifier,
+                        builder: (context, newValue, _) {
+                          return TextField(
+                            controller: toController,
+                            onTap: () {
+                              whichField = field.field2;
+                              // print(whichField.toString());
+                              placeListNotifier.value = places;
+                            },
+                            onChanged: (value) => filterResults(value),
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor:
+                                  const Color.fromARGB(100, 100, 91, 100),
+                              hintStyle: const TextStyle(color: Colors.white70),
+                              hintText: whereTo ?? "Where Are You Going?",
+                              border: const OutlineInputBorder(),
+                            ),
+                          );
+                        }),
                   ),
                   const SizedBox(height: 30),
                 ],
@@ -174,7 +213,6 @@ class _ScreenHomeState extends State<ScreenHome> {
                     return ListView.separated(
                       itemBuilder: (context, index) {
                         return Card(
-                          //  key: ValueKey(places[index]),
                           child: ListTile(
                             title: Text(
                               newValue[index],
@@ -187,6 +225,20 @@ class _ScreenHomeState extends State<ScreenHome> {
                                 ),
                               ),
                             ),
+                            onTap: () {
+                              if (whichField == field.field1) {
+                                whereFrom = newValue[index];
+                                fromController.clear();
+
+                                placeListNotifier.value = [];
+                              } else {
+                                whereTo = newValue[index];
+
+                                placeListNotifier.value = [];
+                                toController.clear();
+                              }
+                            },
+                            enableFeedback: true,
                           ),
                         );
                       },
@@ -319,7 +371,12 @@ class _ScreenHomeState extends State<ScreenHome> {
           SizedBox(
             width: 300,
             child: ElevatedButton(
-              onPressed: () async {
+              onPressed: () {
+                if (whereFrom == null || whereTo == null) {
+                  SnaackBar.showSnaackBar(
+                      context, "Please select Locations", snackRed);
+                  return;
+                }
                 Navigator.of(context).pushNamed('results');
               },
               child: const Text("Find Buses"),

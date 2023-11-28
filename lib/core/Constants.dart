@@ -25,5 +25,5 @@ const List<String> places = [
   'angadippuram',
   'poly',
   'jubilie jn',
-  'puthuya stand',
+  'puthiya stand',
 ];
