@@ -373,7 +373,10 @@ class _ScreenHomeState extends State<ScreenHome> {
               onPressed: () {
                 if (whereFrom == null || whereTo == null) {
                   SnaackBar.showSnaackBar(
-                      context, "Please select Locations", snackRed);
+                    context,
+                    "Please select Locations",
+                    snackRed,
+                  );
 
                   return;
                 } else {

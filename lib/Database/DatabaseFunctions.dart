@@ -17,10 +17,12 @@ class DatabaseFunctions {
     }
   }
 
-  Future<List<DataModel>?> getBuses() async {
+  Future<List<DataModel>?> getBuses(DateTime dateTime) async {
     final buses = await readJsonData();
     if (buses == null) {
       return null;
+    } else if (dateTime.day != DateTime.now().day) {
+      return buses;
     } else {
       final timeHourNow = DateTime.now().hour;
 

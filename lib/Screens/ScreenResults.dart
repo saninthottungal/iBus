@@ -78,7 +78,7 @@ class ScreenResults extends StatelessWidget {
             ),
           ),
           FutureBuilder(
-              future: DatabaseFunctions().getBuses(),
+              future: DatabaseFunctions().getBuses(selectedDateTime),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Expanded(
