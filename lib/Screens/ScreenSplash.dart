@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/Constants.dart';
+import 'package:ibus2/core/splashText.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenSplash extends StatefulWidget {
@@ -15,7 +15,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
   final String imagePath = 'assets/images/pngwing.com.png';
   @override
   void initState() {
-    // checkUser(context);
+    checkUser(context);
     super.initState();
   }
 
@@ -29,23 +29,22 @@ class _ScreenSplashState extends State<ScreenSplash> {
       backgroundColor: themeColor,
       body: Center(
         child: Stack(
+          alignment: Alignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "iBus",
-              style: GoogleFonts.montserrat(
-                textStyle: const TextStyle(
-                  color: Color.fromARGB(210, 255, 255, 255),
-                  fontSize: 150,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            const Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: SplashText(),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(bottom: 250),
               child: Image.asset(
-                "assets/images/pngwing.com.png",
-                width: width * 0.38,
+                'assets/images/playstore.png',
+                scale: 3.5,
               ),
+            ),
+            SizedBox(
+              width: width,
             ),
           ],
         ),
