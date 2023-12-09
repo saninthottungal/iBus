@@ -106,7 +106,7 @@ class ScreenSignUp extends StatelessWidget {
 
               SnaackBar.showSnaackBar(
                   context, "Succesfully Signed Up", snackGreen);
-              Navigator.of(context).pushReplacementNamed('greet');
+              Navigator.of(context).pushNamed('greet');
             },
             child: const Text("Sign Up"),
           ),

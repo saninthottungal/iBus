@@ -74,7 +74,7 @@ class _ScreenGreetState extends State<ScreenGreet> {
                     final user = FirebaseAuth.instance.currentUser;
                     if (user != null) {
                       await user.updateDisplayName(displayName);
-                      Navigator.of(context).pushReplacementNamed('home');
+                      Navigator.of(context).pushNamed('mail');
                     } else {
                       throw Exception();
                     }

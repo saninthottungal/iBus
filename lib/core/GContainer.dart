@@ -26,7 +26,7 @@ class GContainer extends StatelessWidget {
                 textAlign: TextAlign.left,
                 style: GoogleFonts.montserrat(
                   textStyle: const TextStyle(
-                    color: Color.fromARGB(210, 255, 255, 255),
+                    color: Color.fromARGB(230, 255, 255, 255),
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),

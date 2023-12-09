@@ -98,8 +98,18 @@ class ScreenSignIn extends StatelessWidget {
               final sharedPref = await SharedPreferences.getInstance();
               sharedPref.setBool(sharedKey, true);
 
-              SnaackBar.showSnaackBar(context, "Login Successful", snackGreen);
-              Navigator.of(context).pushReplacementNamed('home');
+              final user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                if (!user.emailVerified) {
+                  SnaackBar.showSnaackBar(
+                      context, "Verify Your E-mail", snackGreen);
+                  Navigator.of(context).pushNamed('mail');
+                } else {
+                  SnaackBar.showSnaackBar(
+                      context, "login Succesful", snackGreen);
+                  Navigator.of(context).pushReplacementNamed('home');
+                }
+              }
             },
             child: const Text("Sign In"),
           ),

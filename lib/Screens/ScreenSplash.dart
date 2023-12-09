@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/Constants.dart';
@@ -54,12 +55,17 @@ class _ScreenSplashState extends State<ScreenSplash> {
 }
 
 Future<void> checkUser(BuildContext context) async {
+  final user = FirebaseAuth.instance.currentUser;
   await Future.delayed(const Duration(milliseconds: 2000));
   final sharedPref = await SharedPreferences.getInstance();
   final value = sharedPref.getBool(sharedKey);
   if (value == null || value == false) {
     Navigator.of(context).pushReplacementNamed('signin');
-  } else {
-    Navigator.of(context).pushReplacementNamed('home');
+  } else if (user != null) {
+    if (!user.emailVerified) {
+      Navigator.of(context).pushReplacementNamed('mail');
+    } else {
+      Navigator.of(context).pushReplacementNamed('home');
+    }
   }
 }
