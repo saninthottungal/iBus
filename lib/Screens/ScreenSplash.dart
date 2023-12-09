@@ -15,7 +15,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
   final String imagePath = 'assets/images/pngwing.com.png';
   @override
   void initState() {
-    checkUser(context);
+    // checkUser(context);
     super.initState();
   }
 
