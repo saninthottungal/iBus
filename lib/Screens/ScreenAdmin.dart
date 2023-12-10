@@ -263,6 +263,7 @@ class ScreenAdmin extends StatelessWidget {
                               child: ListTile(
                                 onLongPress: () async {
                                   await showDialog(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext ctx) {
                                         return AlertDialog(
