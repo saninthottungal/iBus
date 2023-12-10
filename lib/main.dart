@@ -1,12 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ibus2/Screens/ScreenAdmin.dart';
 import 'package:ibus2/Screens/ScreenEmailVerify.dart';
 import 'package:ibus2/Screens/ScreenGreet.dart';
 import 'package:ibus2/Screens/ScreenHome.dart';
 import 'package:ibus2/Screens/ScreenSignUp.dart';
 import 'package:ibus2/Screens/ScreenSignin.dart';
 import 'package:ibus2/Screens/ScreenSplash.dart';
+import 'package:ibus2/Screens/ScreenVerifyAdmin.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/firebase_options.dart';
 
@@ -35,6 +37,8 @@ class Myapp extends StatelessWidget {
         "greet": (context) => const ScreenGreet(),
         "home": (context) => const ScreenHome(),
         "mail": (context) => const ScreenEmailVerify(),
+        "admin": (context) => const ScreenAdmin(),
+        "verifyAdmin": (context) => ScreenVerifyAdmin(),
       },
     );
   }

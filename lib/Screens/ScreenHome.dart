@@ -124,8 +124,22 @@ class _ScreenHomeState extends State<ScreenHome> {
                                       SnaackBar.showSnaackBar(context,
                                           "Logout Succesful", snackGreen);
                                     },
-                                    child: const Text("Log Out"),
+                                    child: const Text(
+                                      "Log Out",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
+                                  PopupMenuItem(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .pushNamed("verifyAdmin");
+                                      },
+                                      child: const Text(
+                                        "Admin?",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ))
                                 ],
                               );
                             },
