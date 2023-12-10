@@ -1,10 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:ibus2/core/Colors.dart';
+import 'package:ibus2/core/SnaackBar.dart';
 
+// ignore: must_be_immutable
 class ScreenAdmin extends StatelessWidget {
-  const ScreenAdmin({super.key});
+  //
+
+  final nameController = TextEditingController();
+  final numberController = TextEditingController();
+  DateTime? selectedTime;
+  final formattedTimeNotifier = ValueNotifier<String?>(null);
+  //
+  ScreenAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +35,16 @@ class ScreenAdmin extends StatelessWidget {
                 const SizedBox(
                   height: 90,
                 ),
-                const Row(
+                Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: TextField(
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
+                        controller: nameController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: const InputDecoration(
                             fillColor: Colors.white10,
                             filled: true,
                             hintStyle: TextStyle(color: Colors.white70),
@@ -44,13 +56,14 @@ class ScreenAdmin extends StatelessWidget {
                                 EdgeInsets.symmetric(horizontal: 10)),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Expanded(
                         child: TextField(
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
+                      controller: numberController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
                         fillColor: Colors.white10,
                         filled: true,
                         hintText: "Number",
@@ -61,7 +74,7 @@ class ScreenAdmin extends StatelessWidget {
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       ),
                     )),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                   ],
@@ -73,7 +86,25 @@ class ScreenAdmin extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton.filled(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final now = DateTime.now();
+                        final time = await showTimePicker(
+                            context: context,
+                            initialTime: const TimeOfDay(hour: 5, minute: 10));
+
+                        if (time != null) {
+                          selectedTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            time.hour,
+                            time.minute,
+                          );
+
+                          formattedTimeNotifier.value =
+                              "${selectedTime!.hour} : ${selectedTime!.minute}";
+                        }
+                      },
                       icon: const Icon(Icons.access_alarm),
                       style: const ButtonStyle(
                         //elevation: MaterialStatePropertyAll(10),
@@ -90,23 +121,70 @@ class ScreenAdmin extends StatelessWidget {
                     const SizedBox(
                       width: 20,
                     ),
-                    Text(
-                      "Select Time",
-                      style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    ValueListenableBuilder(
+                        valueListenable: formattedTimeNotifier,
+                        builder: (context, newValue, _) {
+                          return Text(
+                            newValue ?? "Select Time",
+                            style: GoogleFonts.montserrat(
+                              textStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        }),
                   ],
                 ),
                 const SizedBox(
                   height: 30,
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (nameController.text.trim().isEmpty ||
+                        numberController.text.trim().isEmpty) {
+                      SnaackBar.showSnaackBar(
+                          context, "Name or Number of Bus is Empty", snackRed);
+                      return;
+                    } else if (selectedTime == null) {
+                      SnaackBar.showSnaackBar(
+                          context, "Time is Empty", snackRed);
+                      return;
+                    }
+
+                    try {
+                      CollectionReference buses =
+                          FirebaseFirestore.instance.collection('Bus');
+                      final name = nameController.text.trim();
+                      final numberwithoutkl =
+                          numberController.text.trim().toUpperCase();
+
+                      final number = "KL $numberwithoutkl ";
+
+                      final time = Timestamp.fromDate(selectedTime!);
+                      await buses.add({
+                        'name': name,
+                        'number': number,
+                        'time': time,
+                      });
+                      SnaackBar.showSnaackBar(
+                          context, "Bus Added!", snackGreen);
+                    } on FirebaseException catch (_) {
+                      SnaackBar.showSnaackBar(
+                          context, "Couldn't add Bus", snackRed);
+                    } on PlatformException catch (_) {
+                      SnaackBar.showSnaackBar(
+                          context, "Couldn't add Bus", snackRed);
+                    } catch (_) {
+                      SnaackBar.showSnaackBar(
+                          context, "Couldn't add Bus", snackRed);
+                    }
+
+                    nameController.clear();
+                    numberController.clear();
+                    formattedTimeNotifier.value = null;
+                  },
                   icon: const Icon(Icons.add),
                   label: const Text("Add Bus"),
                 ),
@@ -116,19 +194,190 @@ class ScreenAdmin extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return const Card(
-                    child: ListTile(
-                      title: Text("data"),
-                      subtitle: Text("data"),
-                    ),
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 10),
-                itemCount: 20,
-              ),
+              child: StreamBuilder(
+                  stream:
+                      FirebaseFirestore.instance.collection('Bus').snapshots(),
+                  builder: (context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Center(
+                          child: Text(
+                            "🚍 No Network Connection",
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.montserrat(
+                              textStyle: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      case ConnectionState.waiting:
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+
+                      case ConnectionState.active:
+                        if (!snapshot.hasData || snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              "🚍 No Network Connection",
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (snapshot.data!.docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                              "🚍 No Bus Data Available",
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        Iterable<String> times = snapshot.data!.docs.map((bus) {
+                          Timestamp timeFrom = bus['time'];
+                          DateTime time = timeFrom.toDate();
+                          return "${time.hour} : ${time.minute}";
+                        });
+
+                        return ListView.separated(
+                          itemBuilder: (context, index) {
+                            return Card(
+                              child: ListTile(
+                                onLongPress: () async {
+                                  await showDialog(
+                                      context: context,
+                                      builder: (BuildContext ctx) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                            "Delete Bus!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          content: const Text(
+                                            "Do you really want to \ndelete this bus?",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(ctx).pop();
+                                                },
+                                                child: const Text("Cancel")),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            ElevatedButton(
+                                                onPressed: () async {
+                                                  try {
+                                                    final id = snapshot
+                                                        .data!.docs[index].id;
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('Bus')
+                                                        .doc(id)
+                                                        .delete();
+                                                  } on FirebaseException catch (_) {
+                                                    SnaackBar.showSnaackBar(
+                                                        ctx,
+                                                        "couldn,t delete Bus",
+                                                        snackRed);
+                                                    Navigator.of(ctx).pop();
+                                                  } catch (_) {
+                                                    SnaackBar.showSnaackBar(
+                                                        ctx,
+                                                        "Unknown error occured",
+                                                        snackRed);
+                                                    Navigator.of(ctx).pop();
+                                                  }
+
+                                                  Navigator.of(ctx).pop();
+                                                  SnaackBar.showSnaackBar(
+                                                      context,
+                                                      "Bus deleted",
+                                                      snackRed);
+                                                },
+                                                child: const Text(
+                                                  "Delete",
+                                                  style: TextStyle(
+                                                      color: snackRed),
+                                                )),
+                                          ],
+                                        );
+                                      });
+                                },
+                                leading: const Text(
+                                  "🚍 ",
+                                  style: TextStyle(fontSize: 23),
+                                ),
+                                title: Text(
+                                  snapshot.data!.docs[index]['name'],
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: const TextStyle(
+                                      color: themeColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                subtitle:
+                                    Text(snapshot.data!.docs[index]['number']),
+                                trailing: Padding(
+                                  padding: const EdgeInsets.only(right: 30),
+                                  child: Text(
+                                    times.elementAt(index),
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: const TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 10),
+                          itemCount: snapshot.data!.docs.length,
+                        );
+
+                      case ConnectionState.done:
+                        return Center(
+                          child: Text(
+                            "🚍 No Network Connection",
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.montserrat(
+                              textStyle: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                    }
+                  }),
             ),
           )
         ],

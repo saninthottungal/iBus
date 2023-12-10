@@ -37,7 +37,7 @@ class Myapp extends StatelessWidget {
         "greet": (context) => const ScreenGreet(),
         "home": (context) => const ScreenHome(),
         "mail": (context) => const ScreenEmailVerify(),
-        "admin": (context) => const ScreenAdmin(),
+        "admin": (context) => ScreenAdmin(),
         "verifyAdmin": (context) => ScreenVerifyAdmin(),
       },
     );
