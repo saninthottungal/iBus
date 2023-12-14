@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/SnaackBar.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class ScreenAdmin extends StatelessWidget {
@@ -301,7 +302,9 @@ class ScreenAdmin extends StatelessWidget {
                                   snapshot.data!.docs.map((bus) {
                                 Timestamp timeFrom = bus['time'];
                                 DateTime time = timeFrom.toDate();
-                                return "${time.hour} : ${time.minute}";
+                                String formattedTime =
+                                    DateFormat('hh:mm a').format(time);
+                                return formattedTime;
                               });
 
                               return ListView.separated(
@@ -396,17 +399,13 @@ class ScreenAdmin extends StatelessWidget {
                                       ),
                                       subtitle: Text(
                                           snapshot.data!.docs[index]['number']),
-                                      trailing: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 30),
-                                        child: Text(
-                                          times.elementAt(index),
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: const TextStyle(
-                                              color: Colors.green,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                      trailing: Text(
+                                        times.elementAt(index),
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: const TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
