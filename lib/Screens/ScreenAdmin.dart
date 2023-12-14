@@ -195,16 +195,42 @@ class ScreenAdmin extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 260, top: 5),
-            child: ElevatedButton(
-                onPressed: () {
-                  if (sortNotifier.value == 'name') {
-                    sortNotifier.value = 'timeAdded';
-                  } else {
-                    sortNotifier.value = 'name';
-                  }
-                },
-                child: const Text("Sort")),
+            padding: const EdgeInsets.only(left: 240, top: 5),
+            child: Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      if (sortNotifier.value == 'name') {
+                        sortNotifier.value = 'timeAdded';
+                      } else {
+                        sortNotifier.value = 'name';
+                      }
+                    },
+                    child: const Text("Sort")),
+                const SizedBox(width: 10),
+                ValueListenableBuilder(
+                    valueListenable: sortNotifier,
+                    builder: (context, newValue, _) {
+                      if (newValue == 'name') {
+                        return const Text(
+                          "Name",
+                          style: TextStyle(
+                            color: themeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      } else {
+                        return const Text(
+                          "Time\nAdded",
+                          style: TextStyle(
+                            color: themeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }
+                    }),
+              ],
+            ),
           ),
           ValueListenableBuilder(
               valueListenable: sortNotifier,
