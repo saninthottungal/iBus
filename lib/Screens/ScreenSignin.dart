@@ -58,7 +58,25 @@ class ScreenSignIn extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 25,
+            height: 5,
+            width: double.infinity,
+          ),
+
+          //forgot password
+
+          Padding(
+            padding: const EdgeInsets.only(left: 170),
+            child: TextButton(
+              onPressed: () {
+                emailController.clear();
+                passwordController.clear();
+                Navigator.of(context).pushNamed("forgot");
+              },
+              child: const Text("forgot password?"),
+            ),
+          ),
+          const SizedBox(
+            height: 5,
             width: double.infinity,
           ),
 

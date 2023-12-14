@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/Screens/ScreenAdmin.dart';
 import 'package:ibus2/Screens/ScreenEmailVerify.dart';
+import 'package:ibus2/Screens/ScreenForgotPassword.dart';
 import 'package:ibus2/Screens/ScreenGreet.dart';
 import 'package:ibus2/Screens/ScreenHome.dart';
 import 'package:ibus2/Screens/ScreenSignUp.dart';
@@ -39,6 +40,7 @@ class Myapp extends StatelessWidget {
         "mail": (context) => const ScreenEmailVerify(),
         "admin": (context) => ScreenAdmin(),
         "verifyAdmin": (context) => ScreenVerifyAdmin(),
+        "forgot": (context) => ScreenForgotPassword(),
       },
     );
   }
