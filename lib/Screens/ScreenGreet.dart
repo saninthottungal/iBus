@@ -12,17 +12,17 @@ class ScreenGreet extends StatefulWidget {
 }
 
 class _ScreenGreetState extends State<ScreenGreet> {
-  late final TextEditingController nameController;
+  late final TextEditingController _nameController;
 
   @override
   void initState() {
-    nameController = TextEditingController();
+    _nameController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    nameController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -38,7 +38,7 @@ class _ScreenGreetState extends State<ScreenGreet> {
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: TextField(
                 maxLength: 7,
-                controller: nameController,
+                controller: _nameController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.person_3_outlined),
                   hintStyle: TextStyle(color: Colors.black38),
@@ -55,7 +55,7 @@ class _ScreenGreetState extends State<ScreenGreet> {
               width: 100,
               child: ElevatedButton(
                 onPressed: () async {
-                  final displayName = nameController.text;
+                  final displayName = _nameController.text;
 
                   if (displayName.isEmpty) {
                     SnaackBar.showSnaackBar(

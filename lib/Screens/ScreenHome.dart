@@ -17,31 +17,31 @@ class ScreenHome extends StatefulWidget {
 }
 
 class _ScreenHomeState extends State<ScreenHome> {
-  late final String displayName;
-  ValueNotifier<Date> currentDateNotifier = ValueNotifier(Date.today);
-  DateTime selectedDate = DateTime.now();
+  late final String _displayName;
+  final ValueNotifier<Date> _currentDateNotifier = ValueNotifier(Date.today);
+  DateTime _selectedDate = DateTime.now();
 
-  ValueNotifier<List<String>> placeListNotifier = ValueNotifier([]);
+  final ValueNotifier<List<String>> _placeListNotifier = ValueNotifier([]);
 
-  String? whereFrom;
-  String? whereTo;
+  String? _whereFrom;
+  String? _whereTo;
 
-  field whichField = field.field1;
+  field _whichField = field.field1;
 
-  final fromController = TextEditingController();
-  final toController = TextEditingController();
+  final _fromController = TextEditingController();
+  final _toController = TextEditingController();
 
   @override
   void initState() {
     final user = FirebaseAuth.instance.currentUser;
-    displayName = user?.displayName ?? 'User3412';
+    _displayName = user?.displayName ?? 'User3412';
     super.initState();
   }
 
   @override
   void dispose() {
-    fromController.dispose();
-    toController.dispose();
+    _fromController.dispose();
+    _toController.dispose();
     super.dispose();
   }
 
@@ -76,7 +76,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Hi $displayName😀",
+                          "Hi $_displayName😀",
                           textAlign: TextAlign.left,
                           style: GoogleFonts.montserrat(
                             textStyle: const TextStyle(
@@ -158,14 +158,14 @@ class _ScreenHomeState extends State<ScreenHome> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: ValueListenableBuilder(
-                        valueListenable: placeListNotifier,
+                        valueListenable: _placeListNotifier,
                         builder: (context, newvalue, _) {
                           return TextField(
-                            controller: fromController,
+                            controller: _fromController,
                             onTap: () {
-                              whichField = field.field1;
+                              _whichField = field.field1;
 
-                              placeListNotifier.value.addAll(places);
+                              _placeListNotifier.value.addAll(places);
                             },
                             onChanged: (value) => filterResults(value),
                             style: const TextStyle(
@@ -176,7 +176,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                               fillColor:
                                   const Color.fromARGB(100, 100, 91, 100),
                               hintStyle: const TextStyle(color: Colors.white70),
-                              hintText: whereFrom ?? "Where Are You Now ?",
+                              hintText: _whereFrom ?? "Where Are You Now ?",
                               border: const OutlineInputBorder(),
                             ),
                           );
@@ -190,14 +190,14 @@ class _ScreenHomeState extends State<ScreenHome> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: ValueListenableBuilder(
-                        valueListenable: placeListNotifier,
+                        valueListenable: _placeListNotifier,
                         builder: (context, newValue, _) {
                           return TextField(
-                            controller: toController,
+                            controller: _toController,
                             onTap: () {
-                              whichField = field.field2;
+                              _whichField = field.field2;
                               // print(whichField.toString());
-                              placeListNotifier.value = places;
+                              _placeListNotifier.value = places;
                             },
                             onChanged: (value) => filterResults(value),
                             style: const TextStyle(color: Colors.white),
@@ -206,7 +206,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                               fillColor:
                                   const Color.fromARGB(100, 100, 91, 100),
                               hintStyle: const TextStyle(color: Colors.white70),
-                              hintText: whereTo ?? "Where Are You Going?",
+                              hintText: _whereTo ?? "Where Are You Going?",
                               border: const OutlineInputBorder(),
                             ),
                           );
@@ -222,7 +222,7 @@ class _ScreenHomeState extends State<ScreenHome> {
             child: Padding(
               padding: const EdgeInsets.only(top: 5, left: 20, right: 20),
               child: ValueListenableBuilder(
-                  valueListenable: placeListNotifier,
+                  valueListenable: _placeListNotifier,
                   builder: (context, newValue, _) {
                     return ListView.separated(
                       itemBuilder: (context, index) {
@@ -240,16 +240,16 @@ class _ScreenHomeState extends State<ScreenHome> {
                               ),
                             ),
                             onTap: () {
-                              if (whichField == field.field1) {
-                                whereFrom = newValue[index];
-                                fromController.clear();
+                              if (_whichField == field.field1) {
+                                _whereFrom = newValue[index];
+                                _fromController.clear();
 
-                                placeListNotifier.value = [];
+                                _placeListNotifier.value = [];
                               } else {
-                                whereTo = newValue[index];
+                                _whereTo = newValue[index];
 
-                                placeListNotifier.value = [];
-                                toController.clear();
+                                _placeListNotifier.value = [];
+                                _toController.clear();
                               }
                             },
                           ),
@@ -257,7 +257,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                       },
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 2),
-                      itemCount: placeListNotifier.value.length,
+                      itemCount: _placeListNotifier.value.length,
                     );
                   }),
             ),
@@ -285,7 +285,7 @@ class _ScreenHomeState extends State<ScreenHome> {
           SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: ValueListenableBuilder(
-                valueListenable: currentDateNotifier,
+                valueListenable: _currentDateNotifier,
                 builder: (context, newDate, _) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -296,7 +296,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                               value: Date.today,
                               groupValue: newDate,
                               onChanged: (newValue) {
-                                currentDateNotifier.value = newValue!;
+                                _currentDateNotifier.value = newValue!;
                               }),
                           const Text(
                             "Today",
@@ -313,7 +313,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                               value: Date.tomorrow,
                               groupValue: newDate,
                               onChanged: (newValue) {
-                                currentDateNotifier.value = newValue!;
+                                _currentDateNotifier.value = newValue!;
                               }),
                           const Text(
                             "Tomorrow",
@@ -330,8 +330,8 @@ class _ScreenHomeState extends State<ScreenHome> {
                               value: Date.custom,
                               groupValue: newDate,
                               onChanged: (newValue) async {
-                                selectedDate = await customDate(context);
-                                currentDateNotifier.value = newValue!;
+                                _selectedDate = await customDate(context);
+                                _currentDateNotifier.value = newValue!;
                               }),
                           const Text(
                             "Custom",
@@ -350,19 +350,19 @@ class _ScreenHomeState extends State<ScreenHome> {
           const SizedBox(height: 30),
 
           ValueListenableBuilder(
-              valueListenable: currentDateNotifier,
+              valueListenable: _currentDateNotifier,
               builder: (context, newValue, _) {
                 if (newValue == Date.today) {
-                  selectedDate = DateTime.now();
+                  _selectedDate = DateTime.now();
                 } else if (newValue == Date.tomorrow) {
-                  selectedDate = DateTime.now().add(const Duration(days: 1));
+                  _selectedDate = DateTime.now().add(const Duration(days: 1));
                 } else {}
                 return SizedBox(
                   width: double.infinity,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 35),
                     child: Text(
-                      "Preferred Date : ${dateParser(selectedDate)}",
+                      "Preferred Date : ${dateParser(_selectedDate)}",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.montserrat(
                         textStyle: const TextStyle(
@@ -385,7 +385,7 @@ class _ScreenHomeState extends State<ScreenHome> {
             width: 300,
             child: ElevatedButton(
               onPressed: () {
-                if (whereFrom == null || whereTo == null) {
+                if (_whereFrom == null || _whereTo == null) {
                   SnaackBar.showSnaackBar(
                     context,
                     "Please select Locations",
@@ -396,9 +396,9 @@ class _ScreenHomeState extends State<ScreenHome> {
                 } else {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => ScreenResults(
-                            fromLocation: whereFrom!,
-                            toLocation: whereTo!,
-                            selectedDateTime: selectedDate,
+                            fromLocation: _whereFrom!,
+                            toLocation: _whereTo!,
+                            selectedDateTime: _selectedDate,
                           )));
                 }
               },
@@ -436,9 +436,9 @@ class _ScreenHomeState extends State<ScreenHome> {
 
   void filterResults(String enteredWord) {
     if (enteredWord.isEmpty) {
-      placeListNotifier.value = places;
+      _placeListNotifier.value = places;
     } else {
-      placeListNotifier.value =
+      _placeListNotifier.value =
           places.where((place) => place.contains(enteredWord)).toList();
     }
   }

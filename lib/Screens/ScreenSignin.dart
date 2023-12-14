@@ -8,8 +8,8 @@ import 'package:ibus2/core/SnaackBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenSignIn extends StatelessWidget {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   ScreenSignIn({super.key});
 
   @override
@@ -28,7 +28,7 @@ class ScreenSignIn extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: TextField(
-              controller: emailController,
+              controller: _emailController,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.mail_outline),
                 hintStyle: TextStyle(color: Colors.black45),
@@ -46,7 +46,7 @@ class ScreenSignIn extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: TextField(
-              controller: passwordController,
+              controller: _passwordController,
               obscureText: true,
               obscuringCharacter: "*",
               decoration: const InputDecoration(
@@ -68,8 +68,8 @@ class ScreenSignIn extends StatelessWidget {
             padding: const EdgeInsets.only(left: 170),
             child: TextButton(
               onPressed: () {
-                emailController.clear();
-                passwordController.clear();
+                _emailController.clear();
+                _passwordController.clear();
                 Navigator.of(context).pushNamed("forgot");
               },
               child: const Text("forgot password?"),
@@ -84,8 +84,8 @@ class ScreenSignIn extends StatelessWidget {
 
           ElevatedButton(
             onPressed: () async {
-              final email = emailController.text;
-              final password = passwordController.text;
+              final email = _emailController.text;
+              final password = _passwordController.text;
               if (email.trim().isEmpty || password.trim().isEmpty) {
                 SnaackBar.showSnaackBar(
                     context, "E-mail or Password cannot be Empty", snackRed);

@@ -8,7 +8,7 @@ import 'package:ibus2/core/SnaackBar.dart';
 class ScreenForgotPassword extends StatelessWidget {
   ScreenForgotPassword({super.key});
 
-  final emailController = TextEditingController();
+  final _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class ScreenForgotPassword extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: TextField(
-              controller: emailController,
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.mail_outline),
@@ -49,14 +49,14 @@ class ScreenForgotPassword extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (emailController.text.isEmpty) {
+              if (_emailController.text.isEmpty) {
                 SnaackBar.showSnaackBar(
                     context, "Please Enter Your Mail", snackRed);
                 return;
               }
               try {
                 await FirebaseAuth.instance
-                    .sendPasswordResetEmail(email: emailController.text);
+                    .sendPasswordResetEmail(email: _emailController.text);
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'invalid-email':
@@ -85,7 +85,7 @@ class ScreenForgotPassword extends StatelessWidget {
                 SnaackBar.showSnaackBar(
                     context, "An unknown error occured", snackRed);
               }
-              emailController.clear();
+              _emailController.clear();
               SnaackBar.showSnaackBar(
                   context, "Reset password mail sent", snackGreen);
             },

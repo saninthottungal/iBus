@@ -16,16 +16,16 @@ class ScreenEmailVerify extends StatefulWidget {
 }
 
 class _ScreenEmailVerifyState extends State<ScreenEmailVerify> {
-  bool isEmailVerified = false;
-  Timer? timer;
+  bool _isEmailVerified = false;
+  Timer? _timer;
 
   @override
   void initState() {
-    isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-    if (!isEmailVerified) {
+    _isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+    if (!_isEmailVerified) {
       sendEmailVerification();
 
-      timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      _timer = Timer.periodic(const Duration(seconds: 3), (_) {
         checkEmailVerified();
       });
     }
@@ -34,13 +34,13 @@ class _ScreenEmailVerifyState extends State<ScreenEmailVerify> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isEmailVerified) {
+    if (_isEmailVerified) {
       return const ScreenHome();
     } else {
       return Scaffold(
@@ -111,10 +111,10 @@ class _ScreenEmailVerifyState extends State<ScreenEmailVerify> {
   Future<void> checkEmailVerified() async {
     await FirebaseAuth.instance.currentUser!.reload();
     setState(() {
-      isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+      _isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
     });
-    if (isEmailVerified) {
-      timer?.cancel();
+    if (_isEmailVerified) {
+      _timer?.cancel();
     }
   }
 }

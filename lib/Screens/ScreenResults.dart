@@ -6,14 +6,16 @@ import 'package:ibus2/core/Colors.dart';
 class ScreenResults extends StatelessWidget {
   const ScreenResults({
     super.key,
-    required this.fromLocation,
-    required this.toLocation,
-    required this.selectedDateTime,
-  });
+    required String fromLocation,
+    required String toLocation,
+    required DateTime selectedDateTime,
+  })  : _selectedDateTime = selectedDateTime,
+        _toLocation = toLocation,
+        _fromLocation = fromLocation;
 
-  final String fromLocation;
-  final String toLocation;
-  final DateTime selectedDateTime;
+  final String _fromLocation;
+  final String _toLocation;
+  final DateTime _selectedDateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class ScreenResults extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    " 🚍 $fromLocation",
+                    " 🚍 $_fromLocation",
                     // textAlign: TextAlign.left,
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
@@ -53,7 +55,7 @@ class ScreenResults extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    " 🚍 $toLocation",
+                    " 🚍 $_toLocation",
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
                         color: Colors.white,
@@ -64,7 +66,7 @@ class ScreenResults extends StatelessWidget {
                   ),
                   const SizedBox(height: 60),
                   Text(
-                    " 🚍 ${selectedDateTime.day}-${selectedDateTime.month}-${selectedDateTime.year}",
+                    " 🚍 ${_selectedDateTime.day}-${_selectedDateTime.month}-${_selectedDateTime.year}",
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
                         color: Colors.white,
@@ -78,7 +80,7 @@ class ScreenResults extends StatelessWidget {
             ),
           ),
           FutureBuilder(
-              future: DatabaseFunctions().getBuses(selectedDateTime),
+              future: DatabaseFunctions().getBuses(_selectedDateTime),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Expanded(

@@ -10,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ScreenSignUp extends StatelessWidget {
   ScreenSignUp({super.key});
 
-  final emailController = TextEditingController();
+  final _emailController = TextEditingController();
 
-  final passwordController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class ScreenSignUp extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: TextField(
-              controller: emailController,
+              controller: _emailController,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.mail_outline),
                 hintStyle: TextStyle(color: Colors.black45),
@@ -50,7 +50,7 @@ class ScreenSignUp extends StatelessWidget {
             child: TextField(
               obscureText: true,
               obscuringCharacter: '*',
-              controller: passwordController,
+              controller: _passwordController,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.key_outlined),
                 hintStyle: TextStyle(color: Colors.black45),
@@ -68,8 +68,8 @@ class ScreenSignUp extends StatelessWidget {
 
           ElevatedButton(
             onPressed: () async {
-              final email = emailController.text;
-              final password = passwordController.text;
+              final email = _emailController.text;
+              final password = _passwordController.text;
               if (email.trim().isEmpty || password.trim().isEmpty) {
                 SnaackBar.showSnaackBar(
                     context, "E-mail or Password Cannot be Empty", snackRed);

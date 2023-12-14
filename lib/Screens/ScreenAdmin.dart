@@ -11,11 +11,11 @@ import 'package:intl/intl.dart';
 class ScreenAdmin extends StatelessWidget {
   //
 
-  final nameController = TextEditingController();
-  final numberController = TextEditingController();
-  DateTime? selectedTime;
-  final formattedTimeNotifier = ValueNotifier<String?>(null);
-  final sortNotifier = ValueNotifier<String>('name');
+  final _nameController = TextEditingController();
+  final _numberController = TextEditingController();
+  DateTime? _selectedTime;
+  final _formattedTimeNotifier = ValueNotifier<String?>(null);
+  final _sortNotifier = ValueNotifier<String>('name');
   //
   ScreenAdmin({super.key});
 
@@ -44,7 +44,7 @@ class ScreenAdmin extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextField(
-                        controller: nameController,
+                        controller: _nameController,
                         style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                             fillColor: Colors.white10,
@@ -63,7 +63,7 @@ class ScreenAdmin extends StatelessWidget {
                     ),
                     Expanded(
                         child: TextField(
-                      controller: numberController,
+                      controller: _numberController,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         fillColor: Colors.white10,
@@ -95,7 +95,7 @@ class ScreenAdmin extends StatelessWidget {
                             initialTime: const TimeOfDay(hour: 5, minute: 10));
 
                         if (time != null) {
-                          selectedTime = DateTime(
+                          _selectedTime = DateTime(
                             now.year,
                             now.month,
                             now.day,
@@ -103,8 +103,8 @@ class ScreenAdmin extends StatelessWidget {
                             time.minute,
                           );
 
-                          formattedTimeNotifier.value =
-                              "${selectedTime!.hour} : ${selectedTime!.minute}";
+                          _formattedTimeNotifier.value =
+                              "${_selectedTime!.hour} : ${_selectedTime!.minute}";
                         }
                       },
                       icon: const Icon(Icons.access_alarm),
@@ -124,7 +124,7 @@ class ScreenAdmin extends StatelessWidget {
                       width: 20,
                     ),
                     ValueListenableBuilder(
-                        valueListenable: formattedTimeNotifier,
+                        valueListenable: _formattedTimeNotifier,
                         builder: (context, newValue, _) {
                           return Text(
                             newValue ?? "Select Time",
@@ -144,12 +144,12 @@ class ScreenAdmin extends StatelessWidget {
                 ),
                 ElevatedButton.icon(
                   onPressed: () async {
-                    if (nameController.text.trim().isEmpty ||
-                        numberController.text.trim().isEmpty) {
+                    if (_nameController.text.trim().isEmpty ||
+                        _numberController.text.trim().isEmpty) {
                       SnaackBar.showSnaackBar(
                           context, "Name or Number of Bus is Empty", snackRed);
                       return;
-                    } else if (selectedTime == null) {
+                    } else if (_selectedTime == null) {
                       SnaackBar.showSnaackBar(
                           context, "Time is Empty", snackRed);
                       return;
@@ -158,13 +158,13 @@ class ScreenAdmin extends StatelessWidget {
                     try {
                       CollectionReference buses =
                           FirebaseFirestore.instance.collection('Bus');
-                      final name = nameController.text.trim();
+                      final name = _nameController.text.trim();
                       final numberwithoutkl =
-                          numberController.text.trim().toUpperCase();
+                          _numberController.text.trim().toUpperCase();
 
                       final number = "KL $numberwithoutkl ";
 
-                      final time = Timestamp.fromDate(selectedTime!);
+                      final time = Timestamp.fromDate(_selectedTime!);
                       final timeNow = Timestamp.fromDate(DateTime.now());
                       await buses.add({
                         'name': name,
@@ -185,9 +185,9 @@ class ScreenAdmin extends StatelessWidget {
                           context, "Couldn't add Bus", snackRed);
                     }
 
-                    nameController.clear();
-                    numberController.clear();
-                    formattedTimeNotifier.value = null;
+                    _nameController.clear();
+                    _numberController.clear();
+                    _formattedTimeNotifier.value = null;
                   },
                   icon: const Icon(Icons.add),
                   label: const Text("Add Bus"),
@@ -201,16 +201,16 @@ class ScreenAdmin extends StatelessWidget {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      if (sortNotifier.value == 'name') {
-                        sortNotifier.value = 'timeAdded';
+                      if (_sortNotifier.value == 'name') {
+                        _sortNotifier.value = 'timeAdded';
                       } else {
-                        sortNotifier.value = 'name';
+                        _sortNotifier.value = 'name';
                       }
                     },
                     child: const Text("Sort")),
                 const SizedBox(width: 10),
                 ValueListenableBuilder(
-                    valueListenable: sortNotifier,
+                    valueListenable: _sortNotifier,
                     builder: (context, newValue, _) {
                       if (newValue == 'name') {
                         return const Text(
@@ -234,7 +234,7 @@ class ScreenAdmin extends StatelessWidget {
             ),
           ),
           ValueListenableBuilder(
-              valueListenable: sortNotifier,
+              valueListenable: _sortNotifier,
               builder: (context, newValue, _) {
                 return Expanded(
                   child: Padding(

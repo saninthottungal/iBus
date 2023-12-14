@@ -2,6 +2,7 @@ const String sharedKey = 'user';
 
 const List<String> places = [
   'kottappadi',
+  'malappuram',
   'kunnummal',
   'pump',
   'msp',
@@ -25,5 +26,6 @@ const List<String> places = [
   'angadippuram',
   'poly',
   'jubilie jn',
-  'puthiya stand',
+  'moosakutty stand',
+  'perinthalmanna'
 ];

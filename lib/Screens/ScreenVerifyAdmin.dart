@@ -10,9 +10,9 @@ import 'package:ibus2/core/SnaackBar.dart';
 class ScreenVerifyAdmin extends StatelessWidget {
   ScreenVerifyAdmin({super.key});
 
-  final pvtController = TextEditingController();
-  bool isAdmin = false;
-  bool isPassword = false;
+  final _pvtController = TextEditingController();
+  bool _isAdmin = false;
+  bool _isPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: TextField(
-                controller: pvtController,
+                controller: _pvtController,
                 obscureText: true,
                 obscuringCharacter: '*',
                 decoration: const InputDecoration(
@@ -43,7 +43,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                if (pvtController.text.isEmpty) {
+                if (_pvtController.text.isEmpty) {
                   SnaackBar.showSnaackBar(
                       context, "Please enter the pvt code", snackRed);
 
@@ -110,7 +110,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
                                 );
 
                               case ConnectionState.done:
-                                if (isAdmin && isPassword) {
+                                if (_isAdmin && _isPassword) {
                                   return AlertDialog(
                                     title: const Text(
                                       "Admin Verified",
@@ -188,7 +188,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
 
       for (String admin in admins) {
         if (admin == user!.email) {
-          isAdmin = true;
+          _isAdmin = true;
         }
       }
 
@@ -202,8 +202,8 @@ class ScreenVerifyAdmin extends StatelessWidget {
       });
 
       for (final pass in passwords) {
-        if (pvtController.text.trim() == pass) {
-          isPassword = true;
+        if (_pvtController.text.trim() == pass) {
+          _isPassword = true;
         }
       }
     } on FirebaseException catch (_) {
