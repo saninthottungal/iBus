@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ibus2/Database/DatabaseFunctions.dart';
 import 'package:ibus2/Screens/ScreenResults.dart';
+//import 'package:ibus2/Screens/ScreenResults.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/core/Constants.dart';
 import 'package:ibus2/core/SnaackBar.dart';
@@ -384,7 +387,7 @@ class _ScreenHomeState extends State<ScreenHome> {
           SizedBox(
             width: 300,
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_whereFrom == null || _whereTo == null) {
                   SnaackBar.showSnaackBar(
                     context,
@@ -394,12 +397,113 @@ class _ScreenHomeState extends State<ScreenHome> {
 
                   return;
                 } else {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ScreenResults(
-                            fromLocation: _whereFrom!,
-                            toLocation: _whereTo!,
-                            selectedDateTime: _selectedDate,
-                          )));
+                  try {
+                    final db = await DatabaseFunctions().openDB();
+
+                    if (db.isEmpty) {
+                      // ignore: use_build_context_synchronously
+                      await showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (dialoguectx) {
+                            return FutureBuilder(
+                                future:
+                                    DatabaseFunctions().addBusesFromFirestore(),
+                                builder:
+                                    (BuildContext ctx, AsyncSnapshot snapshot) {
+                                  switch (snapshot.connectionState) {
+                                    case ConnectionState.none:
+                                      return const AlertDialog(
+                                        title: Text(
+                                          "Error 404",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CircularProgressIndicator(),
+                                          ],
+                                        ),
+                                      );
+                                    case ConnectionState.waiting:
+                                      return const AlertDialog(
+                                        title: Text(
+                                          "Finding Buses",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CircularProgressIndicator(),
+                                          ],
+                                        ),
+                                      );
+
+                                    case ConnectionState.active:
+                                      return const AlertDialog(
+                                        title: Text(
+                                          "Finding Buses",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CircularProgressIndicator(),
+                                          ],
+                                        ),
+                                      );
+                                    case ConnectionState.done:
+                                      Navigator.of(dialoguectx).pop();
+                                      return const AlertDialog(
+                                        title: Text(
+                                          "Buses Found",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.done_rounded),
+                                          ],
+                                        ),
+                                      );
+                                  }
+                                });
+                          });
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ScreenResults(
+                              fromLocation: _whereFrom!,
+                              toLocation: _whereTo!,
+                              selectedDateTime: _selectedDate)));
+                    } else {
+                      await DatabaseFunctions().getAllBuses();
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ScreenResults(
+                              fromLocation: _whereFrom!,
+                              toLocation: _whereTo!,
+                              selectedDateTime: _selectedDate)));
+                    }
+                  } on FirebaseException catch (_) {
+                    SnaackBar.showSnaackBar(
+                        context, "Couldn't fetch buses", snackRed);
+                  } on PlatformException catch (_) {
+                    SnaackBar.showSnaackBar(
+                        context, "Couldn't connect to network", snackRed);
+                  } catch (_) {
+                    SnaackBar.showSnaackBar(
+                        context, "Couldn't get buses", snackRed);
+                  }
                 }
               },
               child: const Text("Find Buses"),

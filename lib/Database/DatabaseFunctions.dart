@@ -1,39 +1,35 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:ibus2/Database/DatabaseModel.dart';
 
-import 'package:flutter/services.dart' as rootBundle;
-import 'package:ibus2/Database/DataModel.dart';
+final ValueNotifier<List<BusModel>> busNotifier = ValueNotifier([]);
 
 class DatabaseFunctions {
-  final List<DataModel> finalBuses = [];
-  Future<List<DataModel>?> readJsonData() async {
-    try {
-      final jsonData =
-          await rootBundle.rootBundle.loadString("assets/ibusdb.json");
-      final list = json.decode(jsonData) as List<dynamic>;
-      final finalList = list.map((e) => DataModel.fromJson(e)).toList();
-      return finalList;
-    } catch (_) {
-      return null;
-    }
+  Future<Box<BusModel>> openDB() async {
+    return await Hive.openBox<BusModel>('BusDB');
   }
 
-  Future<List<DataModel>?> getBuses(DateTime dateTime) async {
-    final buses = await readJsonData();
-    if (buses == null) {
-      return null;
-    } else if (dateTime.day != DateTime.now().day) {
-      return buses;
-    } else {
-      final timeHourNow = DateTime.now().hour;
+  Future<void> addBusesFromFirestore() async {
+    final db = await openDB();
 
-      await Future.forEach(buses, (element) {
-        final subBus = element.start!.substring(0, 2);
-        final parsedBus = int.tryParse(subBus) ?? 0;
-        if (parsedBus > timeHourNow) {
-          finalBuses.add(element);
-        }
-      });
-      return finalBuses;
-    }
+    final buses = await FirebaseFirestore.instance
+        .collection('Bus')
+        .get()
+        .then((value) => value.docs);
+
+    await Future.forEach(buses, (bus) async {
+      final busObject = BusModel.fromFirestore(bus);
+      await db.add(busObject);
+    });
+
+    getAllBuses();
+  }
+
+  Future<void> getAllBuses() async {
+    busNotifier.value.clear();
+    final db = await openDB();
+    final listOfBus = db.values.toList();
+    busNotifier.value.addAll(listOfBus);
   }
 }

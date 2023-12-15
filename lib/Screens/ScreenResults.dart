@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/Database/DatabaseFunctions.dart';
 import 'package:ibus2/core/Colors.dart';
+import 'package:intl/intl.dart';
 
 class ScreenResults extends StatelessWidget {
   const ScreenResults({
@@ -79,13 +80,15 @@ class ScreenResults extends StatelessWidget {
               ),
             ),
           ),
-          FutureBuilder(
-              future: DatabaseFunctions().getBuses(_selectedDateTime),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
+          ValueListenableBuilder(
+              valueListenable: busNotifier,
+              builder: (context, newValue, _) {
+                if (newValue.isNotEmpty) {
                   return Expanded(
                     child: ListView.separated(
                       itemBuilder: (ctx, index) {
+                        String formattedTime =
+                            DateFormat('hh:mm a').format(newValue[index].time);
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Card(
@@ -98,7 +101,7 @@ class ScreenResults extends StatelessWidget {
                                 style: TextStyle(fontSize: 23),
                               ),
                               title: Text(
-                                snapshot.data!.elementAt(index).name!,
+                                newValue[index].name,
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                     color: themeColor,
@@ -107,18 +110,14 @@ class ScreenResults extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              subtitle:
-                                  Text(snapshot.data!.elementAt(index).regNum!),
-                              trailing: Padding(
-                                padding: const EdgeInsets.only(right: 30),
-                                child: Text(
-                                  snapshot.data!.elementAt(index).start!,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: const TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              subtitle: Text(newValue[index].number),
+                              trailing: Text(
+                                formattedTime,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: const TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
@@ -129,15 +128,25 @@ class ScreenResults extends StatelessWidget {
                       separatorBuilder: (ctx, index) => const SizedBox(
                         height: 10,
                       ),
-                      itemCount: snapshot.data!.length,
+                      itemCount: newValue.length,
                     ),
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return Center(
+                    child: Text(
+                      "🚍 No Bus Data Available",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.montserrat(
+                        textStyle: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
                 }
               }),
-
-          //removeeeeee
         ],
       ),
     );

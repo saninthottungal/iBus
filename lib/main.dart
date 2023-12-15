@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:ibus2/Database/DatabaseFunctions.dart';
+import 'package:ibus2/Database/DatabaseModel.dart';
 import 'package:ibus2/Screens/ScreenAdmin.dart';
 import 'package:ibus2/Screens/ScreenEmailVerify.dart';
 import 'package:ibus2/Screens/ScreenForgotPassword.dart';
@@ -13,9 +16,13 @@ import 'package:ibus2/Screens/ScreenVerifyAdmin.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:ibus2/firebase_options.dart';
 
-main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (!Hive.isAdapterRegistered(BusModelAdapter().typeId)) {
+    Hive.registerAdapter(BusModelAdapter());
+  }
   runApp(const Myapp());
 }
 

@@ -42,7 +42,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
               height: 50,
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_pvtController.text.isEmpty) {
                   SnaackBar.showSnaackBar(
                       context, "Please enter the pvt code", snackRed);
@@ -50,7 +50,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
                   return;
                 }
                 try {
-                  showDialog(
+                  await showDialog(
                     barrierDismissible: false,
                     context: context,
                     builder: (ctx) {
@@ -64,7 +64,7 @@ class ScreenVerifyAdmin extends StatelessWidget {
                               case ConnectionState.none:
                                 return const AlertDialog(
                                   title: Text(
-                                    "Erro 404",
+                                    "Error 404",
                                     textAlign: TextAlign.center,
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
