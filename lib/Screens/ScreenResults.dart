@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/Database/DatabaseFunctions.dart';
 import 'package:ibus2/Database/DatabaseModel.dart';
+import 'package:ibus2/Screens/ScreenBus.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:intl/intl.dart';
 
@@ -134,6 +135,16 @@ class ScreenResults extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (ctx) => ScreenBus(
+                                          busName: sortedBuses[index].name,
+                                          busNumber: sortedBuses[index].number,
+                                          time: sortedBuses[index].time,
+                                          whereFrom: _fromLocation,
+                                          whereTo: _toLocation,
+                                        )));
+                              },
                             ),
                           ),
                         );
