@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ibus2/Database/DatabaseModel.dart';
 
@@ -11,19 +12,27 @@ class DatabaseFunctions {
   }
 
   Future<void> addBusesFromFirestore() async {
-    final db = await openDB();
+    try {
+      final db = await openDB();
 
-    final buses = await FirebaseFirestore.instance
-        .collection('Bus')
-        .get()
-        .then((value) => value.docs);
+      final buses = await FirebaseFirestore.instance
+          .collection('Bus')
+          .get()
+          .then((value) => value.docs);
 
-    await Future.forEach(buses, (bus) async {
-      final busObject = BusModel.fromFirestore(bus);
-      await db.add(busObject);
-    });
+      await Future.forEach(buses, (bus) async {
+        final busObject = BusModel.fromFirestore(bus);
+        await db.add(busObject);
+      });
 
-    getAllBuses();
+      getAllBuses();
+    } on FirebaseException catch (_) {
+      throw FirebaseException(plugin: "");
+    } on PlatformException catch (_) {
+      throw PlatformException(code: "code");
+    } on Exception catch (_) {
+      throw Exception();
+    }
   }
 
   Future<void> getAllBuses() async {

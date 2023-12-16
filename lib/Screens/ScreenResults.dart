@@ -89,11 +89,13 @@ class ScreenResults extends StatelessWidget {
 
                   if (_selectedDateTime.day != DateTime.now().day) {
                     sortedBuses.addAll(busList);
+                    sortedBuses.sort((a, b) => a.time.compareTo(b.time));
                   } else {
                     final now = DateTime.now();
                     for (final bus in busList) {
                       if (bus.time.hour > now.hour) {
                         sortedBuses.add(bus);
+                        sortedBuses.sort((a, b) => a.time.compareTo(b.time));
                       }
                     }
                   }
