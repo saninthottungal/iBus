@@ -14,6 +14,7 @@ class DatabaseFunctions {
   Future<void> addBusesFromFirestore() async {
     try {
       final db = await openDB();
+      await db.clear();
 
       final buses = await FirebaseFirestore.instance
           .collection('Bus')

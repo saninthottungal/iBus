@@ -109,9 +109,6 @@ class ScreenResults extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Card(
                             child: ListTile(
-                              onTap: () {
-                                Navigator.of(context).pushNamed('bus');
-                              },
                               leading: const Text(
                                 "🚍 ",
                                 style: TextStyle(fontSize: 23),

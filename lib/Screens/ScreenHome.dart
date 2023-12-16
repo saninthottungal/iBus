@@ -142,7 +142,133 @@ class _ScreenHomeState extends State<ScreenHome> {
                                         "Admin?",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
-                                      ))
+                                      )),
+                                  PopupMenuItem(
+                                    onTap: () async {
+                                      try {
+                                        await showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (dialoguectx) {
+                                              return FutureBuilder(
+                                                  future: DatabaseFunctions()
+                                                      .addBusesFromFirestore(),
+                                                  builder: (BuildContext ctx,
+                                                      AsyncSnapshot snapshot) {
+                                                    switch (snapshot
+                                                        .connectionState) {
+                                                      case ConnectionState.none:
+                                                        return const AlertDialog(
+                                                          title: Text(
+                                                            "Error 404",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          content: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              CircularProgressIndicator(),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      case ConnectionState
+                                                            .waiting:
+                                                        return const AlertDialog(
+                                                          title: Text(
+                                                            "Finding Buses",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          content: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              CircularProgressIndicator(),
+                                                            ],
+                                                          ),
+                                                        );
+
+                                                      case ConnectionState
+                                                            .active:
+                                                        return const AlertDialog(
+                                                          title: Text(
+                                                            "Finding Buses",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          content: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              CircularProgressIndicator(),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      case ConnectionState.done:
+                                                        Navigator.of(
+                                                                dialoguectx)
+                                                            .pop();
+                                                        return const AlertDialog(
+                                                          title: Text(
+                                                            "Buses Found",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          content: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(Icons
+                                                                  .done_rounded),
+                                                            ],
+                                                          ),
+                                                        );
+                                                    }
+                                                  });
+                                            });
+                                      } on FirebaseException catch (_) {
+                                        SnaackBar.showSnaackBar(context,
+                                            "Couldn't refresh", snackRed);
+                                      } on PlatformException catch (_) {
+                                        SnaackBar.showSnaackBar(
+                                            context,
+                                            "Couldn't connect to network",
+                                            snackRed);
+                                      } on Exception catch (_) {
+                                        SnaackBar.showSnaackBar(context,
+                                            "unknown error occured", snackRed);
+                                      } catch (_) {
+                                        SnaackBar.showSnaackBar(context,
+                                            "unknown error occured", snackRed);
+                                      }
+                                    },
+                                    child: const Text(
+                                      "Refresh",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
                                 ],
                               );
                             },
