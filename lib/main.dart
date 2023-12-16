@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:ibus2/Database/DatabaseFunctions.dart';
 import 'package:ibus2/Database/DatabaseModel.dart';
 import 'package:ibus2/Screens/ScreenAdmin.dart';
 import 'package:ibus2/Screens/ScreenEmailVerify.dart';

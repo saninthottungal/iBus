@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibus2/Database/DatabaseFunctions.dart';
+import 'package:ibus2/Database/DatabaseModel.dart';
 import 'package:ibus2/core/Colors.dart';
 import 'package:intl/intl.dart';
 
@@ -82,13 +83,26 @@ class ScreenResults extends StatelessWidget {
           ),
           ValueListenableBuilder(
               valueListenable: busNotifier,
-              builder: (context, newValue, _) {
-                if (newValue.isNotEmpty) {
+              builder: (context, busList, _) {
+                if (busList.isNotEmpty) {
+                  final List<BusModel> sortedBuses = [];
+
+                  if (_selectedDateTime.day != DateTime.now().day) {
+                    sortedBuses.addAll(busList);
+                  } else {
+                    final now = DateTime.now();
+                    for (final bus in busList) {
+                      if (bus.time.hour > now.hour) {
+                        sortedBuses.add(bus);
+                      }
+                    }
+                  }
+
                   return Expanded(
                     child: ListView.separated(
                       itemBuilder: (ctx, index) {
-                        String formattedTime =
-                            DateFormat('hh:mm a').format(newValue[index].time);
+                        String formattedTime = DateFormat('hh:mm a')
+                            .format(sortedBuses[index].time);
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Card(
@@ -101,7 +115,7 @@ class ScreenResults extends StatelessWidget {
                                 style: TextStyle(fontSize: 23),
                               ),
                               title: Text(
-                                newValue[index].name,
+                                sortedBuses[index].name,
                                 style: GoogleFonts.montserrat(
                                   textStyle: const TextStyle(
                                     color: themeColor,
@@ -110,7 +124,7 @@ class ScreenResults extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              subtitle: Text(newValue[index].number),
+                              subtitle: Text(sortedBuses[index].number),
                               trailing: Text(
                                 formattedTime,
                                 style: GoogleFonts.montserrat(
@@ -128,7 +142,7 @@ class ScreenResults extends StatelessWidget {
                       separatorBuilder: (ctx, index) => const SizedBox(
                         height: 10,
                       ),
-                      itemCount: newValue.length,
+                      itemCount: sortedBuses.length,
                     ),
                   );
                 } else {
