@@ -104,7 +104,7 @@ class ScreenAdmin extends StatelessWidget {
                           );
 
                           _formattedTimeNotifier.value =
-                              "${_selectedTime!.hour} : ${_selectedTime!.minute}";
+                              DateFormat('hh:mm a').format(_selectedTime!);
                         }
                       },
                       icon: const Icon(Icons.access_alarm),

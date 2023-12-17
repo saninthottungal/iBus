@@ -156,15 +156,17 @@ class ScreenResults extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Center(
-                    child: Text(
-                      "🚍 No Bus Data Available",
-                      textAlign: TextAlign.left,
-                      style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                  return Expanded(
+                    child: Center(
+                      child: Text(
+                        "🚍 No Buses\nAvailable right now,\ntry refreshing?",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
