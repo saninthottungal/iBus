@@ -33,8 +33,7 @@ class ScreenBus extends StatelessWidget {
             color: themeColor,
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.only(top: 80, left: 15, right: 10, bottom: 10),
+            padding: const EdgeInsets.only(top: 80, left: 15, bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,7 +43,7 @@ class ScreenBus extends StatelessWidget {
                   style: GoogleFonts.montserrat(
                     textStyle: const TextStyle(
                       color: Color.fromARGB(255, 255, 225, 100),
-                      fontSize: 45,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
